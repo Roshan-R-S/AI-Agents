@@ -1,0 +1,41 @@
+Requirement: Create a function that finds all prime numbers up to N
+
+ Here is the optimized Python code with the suggested improvements as follows:
+
+```python
+def prime_numbers_up_to(N: int) -> List[int]:
+    """
+    Find all prime numbers up to and including N
+
+    Args:
+        N (int): A positive integer greater than 1 representing the upper limit for finding primes.
+
+    Returns:
+        List[int]: A sorted list of all primes found between 2 and N.
+
+    Raises:
+        ValueError: When N is not a positive integer greater than 1.
+
+    Uses the Sieve of Eratosthenes algorithm to efficiently find prime numbers up to a given limit N.
+    """
+
+    if N <= 1:
+        raise ValueError("N must be a positive integer greater than 1.")
+
+    isPrime = [True for _ in range(N+1)]
+    isPrime[0] = isPrime[1] = False  # 0 and 1 are not considered as prime numbers
+
+    limit_sqrt = int(N**0.5) + 1
+
+    for p in range(2, limit_sqrt+1):
+        if isPrime[p]:  # If p is a prime number, mark its multiples as not prime
+            for multiple in range(p*p, N+1, p or 1):  # Prevent ZeroDivisionError when p=1
+                isPrime[multiple] = False
+
+    primes_found = [p for p in range(2, N+1) if isPrime[p]]
+    primes_found.sort()  # Sort the primes found
+
+    return primes_found
+```
+
+By incorporating Pythonic style with updated docstrings layout, error handling, and more readable and comment-friendly code, this code optimizes for speed while maintaining cleanliness, consistency, and efficiency in the performance of the function.
