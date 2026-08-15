@@ -1,0 +1,1 @@
+FROM models/base/models--TheBloke--Mistral-7B-v0.1-GGUF/snapshots/d4ae605152c8de0d6570cf624c083fa57dd0d551/mistral-7b-v0.1.Q4_K_M.gguf
