@@ -29,7 +29,7 @@ print(f"VRAM: 6.44GB")
 print()
 
 # Configuration
-MODEL_ID = "mistralai/Mistral-7B-v0.1"
+MODEL_ID = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 DATASET_PATH = "../datasets/inspiration_coach_data.json"
 OUTPUT_DIR = "../models/inspiration_coach_mistral"
 TOKENIZED_DIR = "../datasets/tokenized_coach_mistral"
@@ -38,13 +38,8 @@ print("=" * 80)
 print("🔧 LOADING MODEL WITH 8-BIT QUANTIZATION")
 print("=" * 80)
 
-# 8-bit quantization config for 6GB VRAM
-bnb_config = BitsAndBytesConfig(
-    load_in_8bit=True,
-    bnb_8bit_compute_dtype=torch.float16,
-    bnb_8bit_use_double_quant=True,
-    bnb_8bit_quant_type="nf8",
-)
+# Disable quantization for TinyLlama compatibility
+bnb_config = None
 
 print("Loading tokenizer...")
 try:
@@ -61,10 +56,10 @@ if tokenizer.pad_token is None:
 tokenizer.padding_side = "right"
 print("✅ Tokenizer loaded")
 
-print("\nLoading model with 8-bit quantization (this may take 2-3 minutes)...")
+print("\nLoading model with 8-bit quantization + CPU offloading (this may take 2-3 minutes)...")
+
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_ID,
-    quantization_config=bnb_config,
     device_map="auto",
     trust_remote_code=True,
 )
@@ -90,9 +85,6 @@ lora_config = LoraConfig(
         "v_proj",
         "k_proj",
         "o_proj",
-        "gate_proj",
-        "up_proj",
-        "down_proj",
     ],
 )
 
